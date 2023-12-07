@@ -1,5 +1,6 @@
 import ballerina/http;
 import ballerina/io;
+import ballerina/log;
 import ballerina/sql;
 import ballerinax/postgresql;
 import ballerinax/postgresql.driver as _;
@@ -38,72 +39,72 @@ type NicCheckRequest record {
 
 service / on new http:Listener(25416) {
 
-    // isolated resource function get checkNic/[string nic]() returns isValid|error? {
+    isolated resource function get checkNic/[string nic]() returns isValid|error? {
 
-    //     // string id = nic.trim();
+        // string id = nic.trim();
 
-    //     // if id.length() == 10 {
+        // if id.length() == 10 {
 
-    //     //     string strID = id.substring(0, 10);
+        //     string strID = id.substring(0, 10);
 
-    //     //     int|error intValue = int:fromString(strID);
+        //     int|error intValue = int:fromString(strID);
 
-    //     //     if !((intValue is int) && (id.substring(10, 11) == "V" || id.substring(10, 11) == "v")) {
-    //     //         isValid result = {
-    //     //                 valid: false,
-    //     //                 nic: nic
-    //     //             };
-    //     //         log:printInfo("Entered NIC is Invalid: ");
-    //     //         return result;
-    //     //     }
-    //     // } else if id.length() == 12 {
+        //     if !((intValue is int) && (id.substring(10, 11) == "V" || id.substring(10, 11) == "v")) {
+        //         isValid result = {
+        //                 valid: false,
+        //                 nic: nic
+        //             };
+        //         log:printInfo("Entered NIC is Invalid: ");
+        //         return result;
+        //     }
+        // } else if id.length() == 12 {
 
-    //     //     int|error intValue = int:fromString(id);
+        //     int|error intValue = int:fromString(id);
 
-    //     //     if !(intValue is int) {
-    //     //         isValid result = {
-    //     //                 valid: false,
-    //     //                 nic: nic
-    //     //             };
-    //     //         log:printInfo("Entered NIC is Invalid: ");
-    //     //         return result;
-    //     //     }
-    //     // }
-    //     // else {
-    //     //     isValid result = {
-    //     //             valid: false,
-    //     //             nic: nic
-    //     //         };
-    //     //     log:printInfo("Entered NIC is Invalid: ");
-    //     //     return result;
-    //     // }
+        //     if !(intValue is int) {
+        //         isValid result = {
+        //                 valid: false,
+        //                 nic: nic
+        //             };
+        //         log:printInfo("Entered NIC is Invalid: ");
+        //         return result;
+        //     }
+        // }
+        // else {
+        //     isValid result = {
+        //             valid: false,
+        //             nic: nic
+        //         };
+        //     log:printInfo("Entered NIC is Invalid: ");
+        //     return result;
+        // }
 
-    //     sql:ParameterizedQuery query = `select * from "user" where id=${nic.trim()};`;
+        sql:ParameterizedQuery query = `select * from "user" where id=${nic.trim()};`;
 
-    //     User|error queryRowResponse = dbClient->queryRow(query);
-    //     io:println(queryRowResponse);
+        User|error queryRowResponse = dbClient->queryRow(query);
+        io:println(queryRowResponse);
 
-    //     if queryRowResponse is error {
-    //         isValid result = {
-    //             valid: false,
-    //             nic: nic
-    //         };
-    //         log:printInfo("Entered NIC  is Invalid: ");
-    //         return result;
-    //     } else {
-    //         isValid result = {
-    //                     valid: true,
-    //                     nic: nic
-    //                 };
-    //         return result;
-    //     }
-    // }
-
-    resource function post nicCheck(@http:Payload NicCheckRequest payload) returns boolean|error? {
-
-        boolean isValidNIC = checkNic(payload.nic);
-        return isValidNIC;
+        if queryRowResponse is error {
+            isValid result = {
+                valid: false,
+                nic: nic
+            };
+            log:printInfo("Entered NIC  is Invalid: ");
+            return result;
+        } else {
+            isValid result = {
+                        valid: true,
+                        nic: nic
+                    };
+            return result;
+        }
     }
+
+    // resource function post nicCheck(@http:Payload NicCheckRequest payload) returns boolean|error? {
+
+    //     boolean isValidNIC = checkNic(payload.nic);
+    //     return isValidNIC;
+    // }
 
 }
 
